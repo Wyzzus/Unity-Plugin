@@ -28,7 +28,7 @@ The sources are also included in the `/Assets` directory as a raw download.
     }
 ```
 5. Once you have `Init` our MotionDna SDK, you can begin accessing our estimation results.
-    * Simple example of updating the position and heading of a camera.
+    * Simple example of updating the position and heading of the player.
 ```csharp
     // Update is called once per frame
     void Update ()
