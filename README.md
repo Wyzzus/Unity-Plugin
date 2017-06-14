@@ -2,16 +2,19 @@
 
 This repository integrates our SDK with [Unity3D](https://unity3d.com).
 
+## Download ##
+
+A Unity package is included in the repository. Download [this](MotionDna.unitypackage) for quick installation.
+The sources are also included in the `/Assets` directory as a raw download.
+
 ## How to use ##
 
 1. Follow the setup procedures below for different targets for importing the plugin
 	* [iOS](#ios)
 	* Others to come
-2. After you import, you should see the following appear
-    * Prefab `MotionDna`
-    	* Attached MonoBehaviour script `MotionDnaCallback`
-    * Script `MotionDna`
-    * Plugins
+2. After you import, you will have access to the following
+    * `/MotionDna` folder containing a Prefab object and the Unity scripts
+    * `/Plugins` folder containing native libraries and wrapper classes for Unity3D integration
 3. Open a scene, and drag the MotionDna.prefab into the scene.
 * This GameObject provides a callback for our SDK to notify Unity3D that new estimation results are ready to be published, via `MotionDnaCallback.ReceivedMotionDna(string)` function. Please make sure only **one** of these exists so you don't make unnecessary queries.
 4. Create a new script and in the `Start()` function, set up our MotionDna SDK
@@ -66,6 +69,26 @@ Functions are grouped below by usage.
 -----
 ## Setup ##
 _It is highly advised that all setup is done in a `MonoBehaviour.Start()` function or any "paused" state, as these calls can be expensive to execute._
+
+* [`MotionDna.Init(string key)`](#motiondnainitstring-key)
+* [`.SetLocation(double lat, double long, double head)`](#setlocationdouble-lat-double-long-double-head)
+* [`.SetLocation(double lat, double long)`](#setlocationdouble-lat-double-long)
+* [`.SetHeading(double heading)`](#setheadingdouble-heading)
+* [`.ResolveLocation()`](#resolvelocation)
+* [`.ResolveHeading()`](#resolveheading)
+* [`.ResolveLocationAndHeading()`](#resolvelocationandheading)
+* [`.ComputeLocation()`](#computelocation)
+* [`.SetCallbackUpdateRateInMs(double ms)`](#setcallbackupdaterateinmsdouble-ms)
+* [`.SetNetworkUpdateRateInMs(double ms)`](#setnetworkupdaterateinmsdouble-ms)
+* [`.SetLocalHeadingOffsetInDegrees(double offset)`](#setlocalheadingoffsetindegreesdouble-offset)
+* [`.SetCartesianOffsetInMetersXY(double x, double y)`](#setcartesianoffsetinmetersxydouble-x-double-y)
+* [`.SetExternalPositioningState(ExternalPositioningState state)`](#setexternalpositioningstateexternalpositioningstate-state)
+* [`.SetPowerMode(PowerConsumptionMode mode)`](#setpowermodepowerconsumptionmode-mode)
+* [`.SetEstimationMode(EstimationMode mode)`](#setestimationmodeestimationmode-mode)
+* [`.EnableARMode(bool state = true)`](#enablearmodebool-state--true)
+* [`.EnableBackgroundMode(bool state = true)`](#enablebackgroundmodebool-state--true)
+* [`.EnableBinaryFileLogging(bool state = true)`](#enablebinaryfileloggingbool-state--true)
+* [`.EnableMapCorrection(bool state = true)`](#enablemapcorrectionbool-state--true)
 
 -----
 #### `MotionDna.Init(string key)`
@@ -156,7 +179,7 @@ A reference to our MotionDna SDK object.
 #### `.ComputeLocation()`
 Use our internal algorithm to compute your location. Calibration may take some time, and may require the user to walk around a bit.
 
-While we are computing the user's location, you can use `MotionDna.GetLocationStatus` to determine when an accurate location has been determined.
+While we are computing the user's location, you can use [`MotionDna.GetLocationStatus`](#locationstatus-getlocationstatusstring-deviceid--null) to determine when an accurate location has been determined.
 
 **Returns**
 A reference to our MotionDna SDK object.
@@ -276,11 +299,18 @@ A reference to our MotionDna SDK object.
 ## Actions ##
 _Actions are used to control our MotionDna behavior._
 
+* [`MotionDna.Pause()`](#motiondnapause)
+* [`MotionDna.Resume()`](#motiondnaresume)
+* [`MotionDna.Stop()`](#motiondnastop)
+* [`MotionDna.StartUDP()`](#motiondnastartudp)
+* [`MotionDna.StopUDP()`](#motiondnastopudp)
+* [`MotionDna.ResetLocalEstimation()`](#motiondnaresetlocalestimation)
+
 -----
 #### `MotionDna.Pause()`
-Pauses and halts publishing of estimation results. You can still continue getting data with the [getters](#Getters), but the data will no longer be realtime.
+Pauses and halts publishing of estimation results. You can still continue getting data with the [getters](#getters), but the data will no longer be realtime.
 
-To continue publishing results, call `MotionDna.Resume()`
+To continue publishing results, call [`MotionDna.Resume()`](#motiondnaresume)
 
 **Returns**
 A reference to our MotionDna SDK object.
@@ -296,7 +326,7 @@ A reference to our MotionDna SDK object.
 #### `MotionDna.Stop()`
 Stops `MotionDna` indefinitely, and releases any resources. You cannot use `resume` after this, and no further data will be processed until `MotionDna` has been initialized again.
 
-Although [getters](#Getters) will continue functioning, they will no longer be updated. Any other [setup](#Setup) functions (except `Init`) will fail.
+Although [getters](#getters) will continue functioning, they will no longer be updated. Any other [setup](#setup) functions (except [`Init`](#motiondnainitstring-key)) will fail.
 
 -----
 #### `MotionDna.StartUDP()`
@@ -336,6 +366,30 @@ Vector3? myPosition = MotionDna.GetLocalPosition();
 // Certain attributes have default values. Position, for example, defaults to Vector3.zero, and we can use the shorthand notation
 Vector3 position = MotionDna.Position;
 ```
+
+* [`string MotionDna.GetDeviceID()`](#string-motiondnagetdeviceid)
+* [`ICollection MotionDna.GetDeviceIDs()`](#icollection-motiondnagetdeviceids)
+* [`int GetNumberOfUniqueDevices()`](#int-getnumberofuniquedevices)
+* [`LocationStatus GetLocationStatus(string deviceID = null)`](#locationstatus-getlocationstatusstring-deviceid--null)
+* [`Vector3 MotionDna.Position`](#vector-motiondnaposition)
+* [`Vector3? MotionDna.GetLocalPosition(string deviceID = null)`](#vector-motiondnagetlocalpositionstring-deviceid--null)
+* [`GlobalLocation? MotionDna.GetGlobalLocation(string deviceID = null)`](#globallocation-motiondnagetgloballocationstring-deviceid--null)
+* [`double MotionDna.Heading`](#double-motiondnaheading)
+* [`double? MotionDna.GetLocalHeading(string deviceID = null)`](#double-motiondnagetlocalheadingstring-deviceid--null)
+* [`double? MotionDna.GetGlobalHeading(string deviceID = null)`](#double-motiondnagetglobalheadingstring-deviceid--null)
+* [`Vector2 MotionDna.Uncertainty`](#vector-motiondnauncertainty)
+* [`Vector2? MotionDna.GetUncertainty(string deviceID = null)`](#vector-motiondnagetuncertaintystring-deviceid--null)
+* [`VerticalDirection MotionDna.GetVerticalMotionDirection (string deviceID = null)`](#verticaldirection-motiondnagetverticalmotiondirection-string-deviceid--null)
+* [`VerticalType MotionDna.GetVerticalMotionType (string deviceID = null)`](#verticaltype-motiondnagetverticalmotiontype-string-deviceid--null)
+* [`Attitude? MotionDna.GetAttitude (string deviceID = null)`](#attitude-motiondnagetattitude-string-deviceid--null)
+* [`double? MotionDna.GetStepFrequency (string deviceID = null)`](#double-motiondnagetstepfrequency-string-deviceid--null)
+* [`PrimaryMotion GetPrimaryMotion (string deviceID = null)`](#primarymotion-getprimarymotion-string-deviceid--null)
+* [`SecondaryMotion GetSecondaryMotion (string deviceID = null)`](#secondarymotion-getsecondarymotion-string-deviceid--null)
+* [`string GetDeviceName (string deviceID = null)`](#string-getdevicename-string-deviceid--null)
+* [`MotionStatistics? GetMotionStatistics (string deviceID = null)`](#motionstatistics-getmotionstatistics-string-deviceid--null)
+* [`Quaternion MotionDna.Orientation`](#quaternion-motiondnaorientation)
+* [`Quaternion? MotionDna.GetOrientation (string deviceID = null)`](#quaternion-motiondnagetorientation-string-deviceid--null)
+* [`float MotionDna.GetTimestamp (string deviceID = null)`](#float-motiondnagettimestamp-string-deviceid--null)
 
 -----
 #### `string MotionDna.GetDeviceID()`
@@ -379,8 +433,8 @@ A `LocationStatus`.
 #### `Vector3 MotionDna.Position`
 Attempts to get the position of the current device, but will default to `Vector3.zero` if the current device doesn't have a valid MotionDna instance running.
 
-**Property `readonly`**
-Gets a Vector3 value.
+**`Get-only` Property**
+The position of the current device, if it exists.
 
 -----
 #### `Vector3? MotionDna.GetLocalPosition(string deviceID = null)`
@@ -406,7 +460,7 @@ A `Nullable<GlobalLocation>` which contains the position of the query device. Wi
 #### `double MotionDna.Heading`
 Gets the local heading of the current device, but will default to 0 if the current device doesn't have a valid MotionDna instance running.
 
-**Property `readonly`**
+**`Get-only` Property**
 The local heading of the current device.
 
 -----
@@ -433,7 +487,7 @@ A `Nullable<double>` which contains the global heading of the query device. Will
 #### `Vector2 MotionDna.Uncertainty`
 Gets the cartesian error of the current device, but will default to `Vector2.zero` if the current device doesn't have a valid MotionDna instance running.
 
-**Property `readonly`**
+**`Get-only` Property**
 The cartesian error from the origin of local positional values on the current device.
 
 -----
@@ -555,8 +609,17 @@ A `Nullable<MotionStatistics>` which contains the motion statistics of the query
 #### `Quaternion MotionDna.Orientation`
 Gets the orientation quaternion of the current device, but will default to `Quaternion.identity` if the current device doesn't have a valid MotionDna instance running.
 
-**Property `readonly`**
+**`Get-only` Property**
 The orientation quaternion on the current device.
+
+**Hint**
+If you want to set the in-game camera rotation to the same rotation as the user's device, recall that in Unity, the default rotation for a camera faces in the `+z` direction, which is horizontal. However, in most other applications, the camera should face downwards in the `-y` direction.
+
+Since the orientation quaternion of a device is "zero" when facing downwards, in order to convert in Unity, we need to perform a rotation. One way to do this is to add an `Empty` to your scene, and add the camera as a child of it. Then, set the rotation of the `Empty` to the following euler angles: `(90, 0, 0)`. In an update function, simply add
+```
+    camera.GetComponent<Transform> ().rotation = MotionDna.Orientation;
+```
+Remember to call [`.EnableARMode()`](enablearmodebool-state--true) at [setup](#setup) so the orientation quaternion is published at a higher frequency!
 
 -----
 #### `Quaternion? MotionDna.GetOrientation (string deviceID = null)`
