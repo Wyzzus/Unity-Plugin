@@ -5,7 +5,7 @@ This repository integrates our SDK with [Unity3D](https://unity3d.com).
 ## How to use ##
 
 1. Follow the setup procedures below for different targets for importing the plugin
-	* [iOS](#iOS)
+	* [iOS](#ios)
 	* Others to come
 2. After you import, you should see the following appear
     * Prefab `MotionDna`
@@ -15,7 +15,7 @@ This repository integrates our SDK with [Unity3D](https://unity3d.com).
 3. Open a scene, and drag the MotionDna.prefab into the scene.
 * The GameObject provides a callback for our SDK to notify Unity3D that new estimation results are ready to be published, via `MotionDnaCallback.ReceivedMotionDna(string)` function.
 4. Create a new script and in the `Start()` function, set up our MotionDna SDK
-    * Here is an example of a basic set up. See the [API](#API) below for more details.
+    * Here is an example of a basic set up. See the [API](#api) below for more details.
 ```csharp
     private const string DEVELOPER_KEY = "/* YOUR DEVELOPER KEY */";
     void Start ()
@@ -59,9 +59,9 @@ To set up the plugin for iOS development, Unity3D and Xcode both need to be conf
 -----
 All functions are linked in `MotionDna.cs` for convenience.
 Functions are grouped below by usage.
- * [Setup](#Setup)
- * [Actions](#Actions)
- * [Getters](#Getters)
+ * [Setup](#setup)
+ * [Actions](#actions)
+ * [Getters](#getters)
 
 -----
 ## Setup ##
