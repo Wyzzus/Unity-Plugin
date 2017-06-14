@@ -619,7 +619,7 @@ Since the orientation quaternion of a device is "zero" when facing downwards, in
 ```
     camera.GetComponent<Transform> ().rotation = MotionDna.Orientation;
 ```
-Remember to call [`.EnableARMode()`](enablearmodebool-state--true) at [setup](#setup) so the orientation quaternion is published at a higher frequency!
+Remember to call [`.EnableARMode()`](#enablearmodebool-state--true) at [setup](#setup) so the orientation quaternion is published at a higher frequency!
 
 -----
 #### `Quaternion? MotionDna.GetOrientation (string deviceID = null)`
