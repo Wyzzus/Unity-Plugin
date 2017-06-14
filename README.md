@@ -13,7 +13,7 @@ This repository integrates our SDK with [Unity3D](https://unity3d.com).
     * Script `MotionDna`
     * Plugins
 3. Open a scene, and drag the MotionDna.prefab into the scene.
-* The GameObject provides a callback for our SDK to notify Unity3D that new estimation results are ready to be published, via `MotionDnaCallback.ReceivedMotionDna(string)` function.
+* This GameObject provides a callback for our SDK to notify Unity3D that new estimation results are ready to be published, via `MotionDnaCallback.ReceivedMotionDna(string)` function. Please make sure only **one** of these exists so you don't make unnecessary queries.
 4. Create a new script and in the `Start()` function, set up our MotionDna SDK
     * Here is an example of a basic set up. See the [API](#api) below for more details.
 ```csharp
@@ -52,7 +52,7 @@ To set up the plugin for iOS development, Unity3D and Xcode both need to be conf
 5. Go in **Xcode**, and configure settings.
 6. In _General_ -> _Embedded Binaries_, press the `+` and select the `Plugins/iOS/MotionDnaSDK.framework`
 7. Set the _Build Settings_ -> _Build Options_ -> _Enable Bitcode_ setting to `No`.
-8. Update your `Info.plist` file with privacy information on location usage (iOS won't let you build if you don't have all of the info messages).
+8. Update your `Info.plist` file with privacy information on location usage `NSLocationWhenInUseUsageDescription` (iOS won't let you build if you don't have all of the info messages).
 9. Build and test your app!
 
 # API #
