@@ -617,7 +617,7 @@ If you want to set the in-game camera rotation to the same rotation as the user'
 
 Since the orientation quaternion of a device is "zero" when facing downwards, in order to convert in Unity, we need to perform a rotation. One way to do this is to add an `Empty` to your scene, and add the camera as a child of it. Then, set the rotation of the `Empty` to the following euler angles: `(90, 0, 0)`. In an update function, simply add
 ```
-    camera.GetComponent<Transform> ().rotation = MotionDna.Orientation;
+    camera.GetComponent<Transform> ().localRotation = MotionDna.Orientation;
 ```
 Remember to call [`.EnableARMode()`](#enablearmodebool-state--true) at [setup](#setup) so the orientation quaternion is published at a higher frequency!
 
