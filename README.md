@@ -47,7 +47,7 @@ The sources are also included in the `/Assets` directory as a raw download.
 -----
 To set up the plugin for iOS development, Unity3D and Xcode both need to be configured.
 
-[![https://youtu.be/7-xBI3G2tSM](http://i.imgur.com/ws5Gmiy.png)](https://youtu.be/7-xBI3G2tSM){:target="_blank"}
+<a href="https://youtu.be/7-xBI3G2tSM" target="_blank"><img src="http://i.imgur.com/ws5Gmiy.png" title="https://youtu.be/7-xBI3G2tSM"></a>
 
 1. Download the plugin and import it to your Unity project.
 
