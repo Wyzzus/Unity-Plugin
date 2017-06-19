@@ -47,7 +47,8 @@ The sources are also included in the `/Assets` directory as a raw download.
 -----
 To set up the plugin for iOS development, Unity3D and Xcode both need to be configured.
 
-<a href="https://youtu.be/7-xBI3G2tSM" target="_blank"><img src="http://i.imgur.com/ws5Gmiy.png" title="https://youtu.be/7-xBI3G2tSM"></a>
+Video tutorial for setup - note that there is a typo in the video: "rotation" should be "localRotation".
+<a href="https://youtu.be/J8430X2g7fE" target="_blank"><img src="http://i.imgur.com/ws5Gmiy.png" title="https://youtu.be/J8430X2g7fE"></a>
 
 1. Download the plugin and import it to your Unity project.
 
