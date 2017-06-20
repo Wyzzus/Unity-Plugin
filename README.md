@@ -61,6 +61,16 @@ Video tutorial for setup - note that there is a typo in the video: "rotation" sh
 8. Update your `Info.plist` file with privacy information on location usage `NSLocationWhenInUseUsageDescription` (iOS won't let you build if you don't have all of the info messages).
 9. Build and test your app!
 
+# Changelog #
+-----
+#### 1.1 
+Added Android support
+Added Versions folder to log previous working unitypackages
+Fixed bug in iOS where can't re-init after stopping in same session
+
+#### 1.0
+Initial release with iOS support
+
 # API #
 -----
 All functions are linked in `MotionDna.cs` for convenience.
