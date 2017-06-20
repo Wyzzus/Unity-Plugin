@@ -1,4 +1,4 @@
-﻿//
+//
 //  MotionDna.cs
 //  MotionDna
 //
@@ -57,7 +57,7 @@ public class MotionDna
 		public MotionStatistics motionStatistics;
 		public WXYZ quaternion;
 
-		public float timestamp;
+		private float timestamp;
 
 		public Device ()
 		{
@@ -74,30 +74,29 @@ public class MotionDna
 		{
 			return !object.ReferenceEquals (device, null);
 		}
+        
+        public void setTime (float time)
+        {
+            timestamp = time;
+        }
+        
+        public float getTime ()
+        {
+            return timestamp;
+        }
 	}
 
 	private struct NativeDevice
 	{
 		public int locationStatus;
-		//		public XYZ localLocation;
-		//		public GlobalLocation globalLocation;
 		public double heading;
 		public double localHeading;
-		//		public XY uncertainty;
 		public int direction;
 		public int type;
-
-		//		public Attitude attitude;
-
 		public double stepFrequency;
 		public int primaryMotion;
 		public int secondaryMotion;
-
 		public string deviceName;
-
-		//		public MotionStatistics motionStatistics;
-
-		//		public WXYZ quaternion;
 	}
 
 	public enum PrimaryMotion
@@ -306,7 +305,7 @@ public class MotionDna
 		}
 		Device device = devices [deviceID];
 		_GetDevice (deviceID, ref device.nativeDevice, ref device.localLocation, ref device.globalLocation, ref device.uncertainty, ref device.attitude, ref device.motionStatistics, ref device.quaternion);
-		device.timestamp = Time.time;
+		device.setTime (Time.unscaledTime);
 	}
 
 	/// <summary>
@@ -636,7 +635,7 @@ public class MotionDna
 	}
 
 	/// <summary>
-	/// Gets the timestamp equal to Time.time, of the most recent received packet from the device with id deviceID, if it exists, or -1 if it does not.
+	/// Gets the timestamp equal to Time.unscaledTime, of the most recent received packet from the device with id deviceID, if it exists, or -1 if it does not.
 	/// <para></para>
 	/// If no deviceID is provided, then default to the current device instead.
 	/// </summary>
@@ -645,7 +644,7 @@ public class MotionDna
 	public static float GetTimestamp (string deviceID = null)
 	{
 		if (device = GetDevice (deviceID))
-			return device.timestamp;
+			return device.getTime ();
 		return -1;
 	}
 

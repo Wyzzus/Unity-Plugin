@@ -9,26 +9,6 @@
 #import <Foundation/Foundation.h>
 #import "MotionDnaPlugin.h"
 
-@interface Device:NSObject
-
-@property NSString* deviceName;
-@property double heading;
-@property XYZ position;
-@property OrientationQuaternion rotation;
-@property Attitude attitude;
-
-@end
-
-@implementation Device:NSObject
-
-@synthesize deviceName;
-@synthesize heading;
-@synthesize position;
-@synthesize rotation;
-@synthesize attitude;
-
-@end
-
 static dispatch_queue_t _devicesQueue = dispatch_queue_create("com.navisens.pojostick.devicesQueue", DISPATCH_QUEUE_CONCURRENT);
 
 @implementation UnityMotionDna
@@ -79,6 +59,7 @@ extern "C" {
     void EXPORT_API _StopMotionDna() {
         if (unityMotionDna)
             [unityMotionDna stop];
+        unityMotionDna = nil;
     }
     
     void EXPORT_API _SetLocationLatitudeLongitudeAndHeadingInDegrees(double latitude, double longitude, double heading) {
