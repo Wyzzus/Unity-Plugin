@@ -115,7 +115,9 @@ To set up the plugin for Android development, Unity3D will build using gradle, a
 -----
 #### 1.1 
 Added Android support
+
 Added Versions folder to log previous working unitypackages
+
 Fixed bug in iOS where can't re-init after stopping in same session
 
 #### 1.0
