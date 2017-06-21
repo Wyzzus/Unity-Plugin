@@ -498,12 +498,16 @@ A `LocationStatus`.
 #### `Vector3 MotionDna.Position`
 Attempts to get the position of the current device, but will default to `Vector3.zero` if the current device doesn't have a valid MotionDna instance running.
 
+Note that the height value can vary depending on the atmospheric pressure, due to fluctuations in barometer readings. Currently the altitude is not locally calibrated, and developers should either compute the initial reading (which has a few seconds delay due depending on hardware), or synchronize against a local world barometric reading.
+
 **`Get-only` Property**
 The position of the current device, if it exists.
 
 -----
 #### `Vector3? MotionDna.GetLocalPosition(string deviceID = null)`
 Gets the cartesian coordinates of a device.
+
+Note that the height value can vary depending on the atmospheric pressure, due to fluctuations in barometer readings. Currently the altitude is not locally calibrated, and developers should either compute the initial reading (which has a few seconds delay due depending on hardware), or synchronize against a local world barometric reading.
 
 **Params**
 Optional `deviceID` of query device. If blank, then the current device is used.
@@ -514,6 +518,8 @@ A `Nullable<Vector3>` which contains the position of the query device. Will be `
 -----
 #### `GlobalLocation? MotionDna.GetGlobalLocation(string deviceID = null)`
 Gets the global location of a device. Will return `null` if no global coordinates were initialized.
+
+Note that the height value can vary depending on the atmospheric pressure, due to fluctuations in barometer readings. Currently the altitude is not locally calibrated, and developers should either compute the initial reading (which has a few seconds delay due depending on hardware), or synchronize against a local world barometric reading.
 
 **Params**
 Optional `deviceID` of query device. If blank, then the current device is used.
