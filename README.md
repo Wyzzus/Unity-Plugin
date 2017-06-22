@@ -113,6 +113,9 @@ To set up the plugin for Android development, Unity3D will build using gradle, a
 
 # Changelog #
 -----
+#### 1.2
+Fixed bug where trivial error messages would display while playing app on non-mobile devices
+
 #### 1.1 
 Added Android support
 
