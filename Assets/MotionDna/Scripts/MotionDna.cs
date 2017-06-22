@@ -1,3 +1,11 @@
+#if !UNITY_EDITOR
+#if UNITY_IOS
+#define MOBILE_IOS
+#elif UNITY_ANDROID
+#define MOBILE_ANDROID
+#endif
+#endif
+
 //
 //  MotionDna.cs
 //  MotionDna
@@ -6,10 +14,6 @@
 //  Copyright © 2017 Navisens. All rights reserved.
 //
 
-#if !UNITY_EDITOR && (UNITY_IOS || UNITY_ANDROID)
-#define MOBILE
-#endif
-
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
@@ -17,36 +21,43 @@ using UnityEngine;
 
 public class MotionDna
 {
+	[System.Serializable]
 	private struct XY
 	{
 		public double x, y;
 	}
 
+	[System.Serializable]
 	private struct XYZ
 	{
 		public double x, y, z;
 	}
 
+	[System.Serializable]
 	private struct WXYZ
 	{
 		public double w, x, y, z;
 	}
 
+	[System.Serializable]
 	public struct GlobalLocation
 	{
 		public double latitude, longitude, altitude;
 	}
 
+	[System.Serializable]
 	public struct Attitude
 	{
 		public double roll, pitch, yaw;
 	}
 
+	[System.Serializable]
 	public struct MotionStatistics
 	{
 		public double dwelling, walking, stationary;
 	}
 
+	[System.Serializable]
 	private class Device
 	{
 		public NativeDevice nativeDevice;
@@ -57,7 +68,8 @@ public class MotionDna
 		public MotionStatistics motionStatistics;
 		public WXYZ quaternion;
 
-		private float timestamp;
+		[System.NonSerialized]
+		public float timestamp;
 
 		public Device ()
 		{
@@ -74,18 +86,9 @@ public class MotionDna
 		{
 			return !object.ReferenceEquals (device, null);
 		}
-        
-        public void setTime (float time)
-        {
-            timestamp = time;
-        }
-        
-        public float getTime ()
-        {
-            return timestamp;
-        }
 	}
 
+	[System.Serializable]
 	private struct NativeDevice
 	{
 		public int locationStatus;
@@ -188,10 +191,8 @@ public class MotionDna
 	// Extern Functions
 	// ================================================================================ //
 
-	#if UNITY_IOS
+	#if MOBILE_IOS
 	const string dllName = "__Internal";
-	// #elif UNITY_ANDROID
-	// const string dllName = "MotionDna";
 	#else
 	const string dllName = "null";
 	#endif
@@ -287,6 +288,10 @@ public class MotionDna
 	private static Dictionary<string, Device> devices = new Dictionary<string, Device> ();
 	private static Device device;
 
+	#if MOBILE_ANDROID
+	private static AndroidJavaClass motionDna = new AndroidJavaClass ("com.navisens.motiondnaapi.MotionDnaPlugin");
+	#endif
+
 	// Helpers
 	// ================================================================================ //
 
@@ -304,8 +309,14 @@ public class MotionDna
 			devices.Add (deviceID, new Device ());
 		}
 		Device device = devices [deviceID];
+
+		#if MOBILE_IOS
 		_GetDevice (deviceID, ref device.nativeDevice, ref device.localLocation, ref device.globalLocation, ref device.uncertainty, ref device.attitude, ref device.motionStatistics, ref device.quaternion);
-		device.setTime (Time.unscaledTime);
+		#elif MOBILE_ANDROID
+		DeviceFromJson (device, motionDna.CallStatic<string> ("getDeviceJson", deviceID));
+		#endif
+
+		device.timestamp = Time.unscaledTime;
 	}
 
 	/// <summary>
@@ -322,6 +333,17 @@ public class MotionDna
 		return null;
 	}
 
+	/// <summary>
+	/// Overwrites the device with json.
+	/// </summary>
+	/// <param name="d">Device.</param>
+	/// <param name="json">JSON.</param>
+	private static void DeviceFromJson (Device d, string json)
+	{
+		if (d)
+			JsonUtility.FromJsonOverwrite (json, d);
+	}
+
 	// Interface
 	// ================================================================================ //
 
@@ -331,10 +353,15 @@ public class MotionDna
 	/// <returns>The device ID.</returns>
 	public static string GetDeviceID ()
 	{
-		#if MOBILE
 		if (deviceID.Length == 0)
+			#if MOBILE_IOS
 			deviceID = _GetDeviceID ();
-		#endif
+			#elif MOBILE_ANDROID
+			deviceID = motionDna.CallStatic<string> ("getDeviceID");
+			#else
+			deviceID = "null";
+			#endif
+
 		return deviceID;
 	}
 
@@ -644,7 +671,7 @@ public class MotionDna
 	public static float GetTimestamp (string deviceID = null)
 	{
 		if (device = GetDevice (deviceID))
-			return device.getTime ();
+			return device.timestamp;
 		return -1;
 	}
 
@@ -657,9 +684,14 @@ public class MotionDna
 	/// <param name="devKey">Developer key.</param>
 	public static MotionDna Init (string devKey)
 	{
-		#if MOBILE
+		#if MOBILE_IOS
 		_StartMotionDna (devKey);
+		#elif MOBILE_ANDROID
+		motionDna.CallStatic ("startMotionDna", devKey);
 		#endif
+
+		if (_singleton == null)
+			_singleton = new MotionDna ();
 		return _singleton;
 	}
 
@@ -668,9 +700,12 @@ public class MotionDna
 	/// </summary>
 	public static void Stop ()
 	{
-		#if MOBILE
+		#if MOBILE_IOS
 		_StopMotionDna ();
+		#elif MOBILE_ANDROID
+		motionDna.CallStatic ("stopMotionDna");
 		#endif
+
 		_singleton = null;
 	}
 
@@ -682,9 +717,12 @@ public class MotionDna
 	/// <param name="heading">Heading in degrees.</param>
 	public MotionDna SetLocation (double latitude, double longitude, double heading)
 	{
-		#if MOBILE
+		#if MOBILE_IOS
 		_SetLocationLatitudeLongitudeAndHeadingInDegrees (latitude, longitude, heading);
+		#elif MOBILE_ANDROID
+		motionDna.CallStatic ("setLocationLatitudeLongitudeAndHeadingInDegrees", latitude, longitude, heading);
 		#endif
+
 		return _singleton;
 	}
 
@@ -693,9 +731,12 @@ public class MotionDna
 	/// </summary>
 	public MotionDna ResolveLocationAndHeading ()
 	{
-		#if MOBILE
+		#if MOBILE_IOS
 		_SetLocationAndHeadingGPSMag ();
+		#elif MOBILE_ANDROID
+		motionDna.CallStatic ("setLocationAndHeadingGPSMag");
 		#endif
+
 		return _singleton;
 	}
 
@@ -706,9 +747,12 @@ public class MotionDna
 	/// <param name="longitude">Longitude.</param>
 	public MotionDna SetLocation (double latitude, double longitude)
 	{
-		#if MOBILE
+		#if MOBILE_IOS
 		_SetLocationLatitudeLongitude (latitude, longitude);
+		#elif MOBILE_ANDROID
+		motionDna.CallStatic ("setLocationLatitudeLongitude", latitude, longitude);
 		#endif
+
 		return _singleton;
 	}
 
@@ -717,9 +761,12 @@ public class MotionDna
 	/// </summary>
 	public MotionDna ResolveLocation ()
 	{
-		#if MOBILE
+		#if MOBILE_IOS
 		_SetLocationGPSOnly ();
+		#elif MOBILE_ANDROID
+		motionDna.CallStatic ("setLocationGPSOnly");
 		#endif
+
 		return _singleton;
 	}
 
@@ -728,9 +775,12 @@ public class MotionDna
 	/// </summary>
 	public MotionDna ResolveHeading ()
 	{
-		#if MOBILE
+		#if MOBILE_IOS
 		_SetHeadingMagInDegrees ();
+		#elif MOBILE_ANDROID
+		motionDna.CallStatic ("setHeadingMagInDegrees");
 		#endif
+
 		return _singleton;
 	}
 
@@ -740,9 +790,12 @@ public class MotionDna
 	/// <param name="heading">Heading.</param>
 	public MotionDna SetHeading (double heading)
 	{
-		#if MOBILE
+		#if MOBILE_IOS
 		_SetHeadingInDegrees (heading);
+		#elif MOBILE_ANDROID
+		motionDna.CallStatic ("setHeadingInDegrees", heading);
 		#endif
+
 		return _singleton;
 	}
 
@@ -751,9 +804,12 @@ public class MotionDna
 	/// </summary>
 	public MotionDna ComputeLocation ()
 	{
-		#if MOBILE
+		#if MOBILE_IOS
 		_SetLocationNavisens ();
+		#elif MOBILE_ANDROID
+		motionDna.CallStatic ("setLocationNavisens");
 		#endif
+
 		return _singleton;
 	}
 
@@ -762,9 +818,12 @@ public class MotionDna
 	/// </summary>
 	public static MotionDna Pause ()
 	{
-		#if MOBILE
+		#if MOBILE_IOS
 		_Pause ();
+		#elif MOBILE_ANDROID
+		motionDna.CallStatic ("pause");
 		#endif
+
 		return _singleton;
 	}
 
@@ -773,9 +832,12 @@ public class MotionDna
 	/// </summary>
 	public static MotionDna Resume ()
 	{
-		#if MOBILE
+		#if MOBILE_IOS
 		_Resume ();
+		#elif MOBILE_ANDROID
+		motionDna.CallStatic ("resume");
 		#endif
+
 		return _singleton;
 	}
 
@@ -785,9 +847,12 @@ public class MotionDna
 	/// <param name="state">If set to <c>true</c> state.</param>
 	public MotionDna EnableMapCorrection (bool state = true)
 	{
-		#if MOBILE
+		#if MOBILE_IOS
 		_SetMapCorrectionEnabled (state);
+		#elif MOBILE_ANDROID
+		motionDna.CallStatic ("setMapCorrectionEnabled", state);
 		#endif
+
 		return _singleton;
 	}
 
@@ -797,9 +862,12 @@ public class MotionDna
 	/// <param name="rate">Period between updates.</param>
 	public MotionDna SetCallbackUpdateRateInMs (double rate)
 	{
-		#if MOBILE
+		#if MOBILE_IOS
 		_SetCallbackUpdateRateInMs (rate);
+		#elif MOBILE_ANDROID
+		motionDna.CallStatic ("setCallbackUpdateRateInMs", rate);
 		#endif
+
 		return _singleton;
 	}
 
@@ -809,9 +877,12 @@ public class MotionDna
 	/// <param name="rate">Period between updates.</param>
 	public MotionDna SetNetworkUpdateRateInMs (double rate)
 	{
-		#if MOBILE
+		#if MOBILE_IOS
 		_SetNetworkUpdateRateInMs (rate);
+		#elif MOBILE_ANDROID
+		motionDna.CallStatic ("setNetworkUpdateRateInMs", rate);
 		#endif
+
 		return _singleton;
 	}
 
@@ -821,9 +892,12 @@ public class MotionDna
 	/// <param name="state">If set to <c>true</c> state.</param>
 	public MotionDna EnableBinaryFileLogging (bool state = true)
 	{
-		#if MOBILE
+		#if MOBILE_IOS
 		_SetBinaryFileLoggingEnabled (state);
+		#elif MOBILE_ANDROID
+		motionDna.CallStatic ("setBinaryFileLoggingEnabled", state);
 		#endif
+
 		return _singleton;
 	}
 
@@ -833,9 +907,12 @@ public class MotionDna
 	/// <param name="state">External positioning state.</param>
 	public MotionDna SetExternalPositioningState (ExternalPositioningState state)
 	{
-		#if MOBILE
+		#if MOBILE_IOS
 		_SetExternalPositioningState ((int)state);
+		#elif MOBILE_ANDROID
+		motionDna.CallStatic ("setExternalPositioningState", (int)state);
 		#endif
+
 		return _singleton;
 	}
 
@@ -844,9 +921,12 @@ public class MotionDna
 	/// </summary>
 	public static MotionDna StartUDP ()
 	{
-		#if MOBILE
+		#if MOBILE_IOS
 		_StartUDP ();
+		#elif MOBILE_ANDROID
+		motionDna.CallStatic ("startUDP");
 		#endif
+
 		return _singleton;
 	}
 
@@ -855,21 +935,29 @@ public class MotionDna
 	/// </summary>
 	public static MotionDna StopUDP ()
 	{
-		#if MOBILE
+		#if MOBILE_IOS
 		_StopUDP ();
+		#elif MOBILE_ANDROID
+		motionDna.CallStatic ("stopUDP");
 		#endif
+
 		return _singleton;
 	}
 
 	/// <summary>
 	/// Enables or disables background mode.
+	/// 
+	/// Note: doesn't do anything in Android, because background mode is not controlled here.
 	/// </summary>
 	/// <param name="state">If set to <c>true</c> state.</param>
 	public MotionDna EnableBackgroundMode (bool state = true)
 	{
-		#if MOBILE
+		#if MOBILE_IOS
 		_SetBackgroundModeEnabled (state);
+		#elif MOBILE_ANDROID
+		motionDna.CallStatic ("setBackgroundModeEnabled", state);
 		#endif
+
 		return _singleton;
 	}
 
@@ -879,9 +967,12 @@ public class MotionDna
 	/// <param name="mode">Power consumption mode.</param>
 	public MotionDna SetPowerMode (PowerConsumptionMode mode)
 	{
-		#if MOBILE
+		#if MOBILE_IOS
 		_SetPowerMode ((int)mode);
+		#elif MOBILE_ANDROID
+		motionDna.CallStatic ("setPowerMode", (int)mode);
 		#endif
+
 		return _singleton;
 	}
 
@@ -891,9 +982,12 @@ public class MotionDna
 	/// <param name="hdg">Hdg.</param>
 	public MotionDna SetLocalHeadingOffsetInDegrees (double hdg)
 	{
-		#if MOBILE
+		#if MOBILE_IOS
 		_SetLocalHeadingOffsetInDegrees (hdg);
+		#elif MOBILE_ANDROID
+		motionDna.CallStatic ("setLocalHeadingOffsetInDegrees", hdg);
 		#endif
+
 		return _singleton;
 	}
 
@@ -904,9 +998,12 @@ public class MotionDna
 	/// <param name="y">The y coordinate.</param>
 	public MotionDna SetCartesianOffsetInMetersXY (double x, double y)
 	{
-		#if MOBILE
+		#if MOBILE_IOS
 		_SetCartesianOffsetInMetersXY (x, y);
+		#elif MOBILE_ANDROID
+		motionDna.CallStatic ("setCartesianOffsetInMetersXY", x, y);
 		#endif
+
 		return _singleton;
 	}
 
@@ -916,9 +1013,12 @@ public class MotionDna
 	/// <param name="state">If set to <c>true</c> state.</param>
 	public MotionDna EnableARMode (bool state = true)
 	{
-		#if MOBILE
+		#if MOBILE_IOS
 		_SetARModeEnabled (state);
+		#elif MOBILE_ANDROID
+		motionDna.CallStatic ("setARModeEnabled", state);
 		#endif
+
 		return _singleton;
 	}
 
@@ -928,9 +1028,12 @@ public class MotionDna
 	/// <param name="mode">Estimation mode.</param>
 	public MotionDna SetEstimationMode (EstimationMode mode)
 	{
-		#if MOBILE
+		#if MOBILE_IOS
 		_SetEstimationMode ((int)mode);
+		#elif MOBILE_ANDROID
+		motionDna.CallStatic ("setEstimationMode", (int)mode);
 		#endif
+
 		return _singleton;
 	}
 
@@ -939,8 +1042,10 @@ public class MotionDna
 	/// </summary>
 	public static MotionDna ResetLocalEstimation ()
 	{
-		#if MOBILE
+		#if MOBILE_IOS
 		_ResetLocalEstimation ();
+		#elif MOBILE_ANDROID
+		motionDna.CallStatic ("resetLocalEstimation");
 		#endif
 		return _singleton;
 	}
