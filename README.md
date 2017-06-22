@@ -64,6 +64,9 @@ Video tutorial for setup - note that there is a typo in the video: "rotation" sh
 ## Android ##
 To set up the plugin for Android development, Unity3D will build using gradle, and additional configuration will be done after the build.
 
+Video tutorial for setup.
+[![https://youtu.be/9CgXvxqJcjY](http://i.imgur.com/Wozs3BZ.png)](https://youtu.be/9CgXvxqJcjY)
+
 1. Download the plugin and import it to your Unity project.
 
 2. Set the _Platform_ to `Android` in _Build Settings_.
