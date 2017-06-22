@@ -67,7 +67,7 @@ To set up the plugin for Android development, Unity3D will build using gradle, a
 1. Download the plugin and import it to your Unity project.
 
 2. Set the _Platform_ to `Android` in _Build Settings_.
-3. Set the _Build System_ to `Gradle` in _Build Settings_.
+3. Set the _Build System_ to `Gradle` in _Build Settings_ and enable the `Export` option.
 4. Build your application.
 5. Open up the `build.gradle` and make the following changes
     1. Remove the Unity3D comment, so Unity will not override the changes we make to `build.gradle`
