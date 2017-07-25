@@ -116,17 +116,22 @@ Video tutorial for setup.
 
 # Changelog #
 -----
-#### 1.2
+#### 1.3.0
+Updated internals for better recognization of Augmented Reality type motions
+
+Reorganized repository
+
+#### 1.2.0
 Fixed bug where trivial error messages would display while playing app on non-mobile devices
 
-#### 1.1 
+#### 1.1.0
 Added Android support
 
 Added Versions folder to log previous working unitypackages
 
 Fixed bug in iOS where can't re-init after stopping in same session
 
-#### 1.0
+#### 1.0.0
 Initial release with iOS support
 
 # API #
