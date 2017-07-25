@@ -213,7 +213,7 @@ typedef enum MapObjectType MapObjectType;
 -(MotionStatistics)getMotionStatistics;
 -(MotionStatistics)getPolygonMotionStatistics;
 -(OrientationQuaternion)getQuaternion;
-
+-(XY)getDebugVector;
 @end
 
 #endif
