@@ -297,6 +297,8 @@ Adds an offset to the local cartesian coordinates.
 **Params**
 The `x` and `y` offset from the cartesian origin in meters.
 
+_**NOTE**: at the current time, this function does not automatically rotate left-handed and right-handed coordinates (Unity and our SDK use different coordinate systems). Therefore, please pass in Unity coordinates `(z, -x)` in place of `(x, y)`_
+
 **Returns**
 A reference to our MotionDna SDK object.
 
