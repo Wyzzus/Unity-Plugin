@@ -142,6 +142,9 @@ Functions are grouped below by usage.
  * [Actions](#actions)
  * [Getters](#getters)
 
+All callbacks are linked in `MotionDnaCallback.cs`.
+ * [Callbacks](#callbacks)
+
 -----
 ## Setup ##
 _It is highly advised that all setup is done in a `MonoBehaviour.Start()` function or any "paused" state, as these calls can be expensive to execute._
@@ -381,8 +384,16 @@ _Actions are used to control our MotionDna behavior._
 * [`MotionDna.Resume()`](#motiondnaresume)
 * [`MotionDna.Stop()`](#motiondnastop)
 * [`MotionDna.StartUDP()`](#motiondnastartudp)
+* [`MotionDna.StartUDP(string room)`](#motiondnastartudpstring-room)&dagger;
+* [`MotionDna.StartUDP(string host, string port)`](#motiondnastartudpstring-host-string-port)&dagger;
+* [`MotionDna.StartUDP(string room, string host, string port)`](#motiondnastartudpstring-room-string-host-string-port)&dagger;
 * [`MotionDna.StopUDP()`](#motiondnastopudp)
+* [`MotionDna.SetUDPRoom(string room)`](#motiondnasetudproomstring-room)&dagger;
+* [`MotionDna.SendUDP(string message)`](#motiondnasendudpstring-message)&dagger;
+* [`MotionDna.QueryUDPRooms(string[] rooms)`](#motiondnaqueryudproomsstring-rooms)&dagger;
 * [`MotionDna.ResetLocalEstimation()`](#motiondnaresetlocalestimation)
+
+&dagger;<sub><sup>This feature not in Unity yet, and is only available for native SDKs. Unity release expected in near future.</sup></sub>
 
 -----
 #### `MotionDna.Pause()`
@@ -408,10 +419,51 @@ Although [getters](#getters) will continue functioning, they will no longer be u
 
 -----
 #### `MotionDna.StartUDP()`
-Begin broadcasting this device's `MotionDna` to your servers, so other devices will receive positional data.
+Overload of [`MotionDna.StartUDP(string room, string host, string port)`](#motiondnastartudpstring-room-string-host-string-port), using the public default servers and the default room.
+
+When broadcasting, note that all traffic into and out of the room will be received by your device! By default, each room can only have a maximum of 10 users, thus if other developers are using the default room, it is likely that your connection will fail.
+
+For production, make sure to use your own servers to maximize reliability!
 
 **Returns**
 A reference to our MotionDna SDK object.
+
+-----
+#### `MotionDna.StartUDP(string room)`&dagger;
+Overload of [`MotionDna.StartUDP(string room, string host, string port)`](#motiondnastartudpstring-room-string-host-string-port), using the public default servers.
+
+When broadcasting, note that all traffic into and out of the room will be received by your device! By default, a server can only hold 100 rooms, thus if many other developers have created new rooms, it is likely that your connection will fail.
+
+For production, make sure to use your own servers to maximize reliability!
+
+**Returns**
+A reference to our MotionDna SDK object.
+
+&dagger;<sub><sup>This feature not in Unity yet, and is only available for native SDKs. Unity release expected in near future.</sup></sub>
+
+-----
+#### `MotionDna.StartUDP(string host, string port)`&dagger;
+Overload of [`MotionDna.StartUDP(string room, string host, string port)`](#motiondnastartudpstring-room-string-host-string-port), using your own servers. The default room will be joined.
+
+However, by default, server rooms can only have a maximum of 10 users, thus this should only be used for debug and testing purposes. Alternatively, use [`MotionDna.SetUDPRoom(string room)`](#motiondnasetudproomstring-room) to switch to another room at runtime.
+
+**Returns**
+A reference to our MotionDna SDK object.
+
+&dagger;<sub><sup>This feature not in Unity yet, and is only available for native SDKs. Unity release expected in near future.</sup></sub>
+
+-----
+#### `MotionDna.StartUDP(string room, string host, string port)`&dagger;
+Connect to your own server and specify a room. Any other device connected to the same room and also under the same developer will receive any udp packets this device sends.
+
+This device will automatically begin broadcasting the `MotionDna` to your servers, so other devices will receive positional data. Using the [`MotionDna.SendUDP(string message)`](#motiondnasendudpstring-message) call will allow sending arbitrary strings of data, although it is recommended to use only safe and secure characters if communicating with devices of differing OS.
+
+All messages and data are encrypted and sent securely; the server is unable to decode anything - only clients can read and interpret messages.
+
+**Returns**
+A reference to our MotionDna SDK object.
+
+&dagger;<sub><sup>This feature not in Unity yet, and is only available for native SDKs. Unity release expected in near future.</sup></sub>
 
 -----
 #### `MotionDna.StopUDP()`
@@ -419,6 +471,30 @@ Stop broadcasting positional data to your servers.
 
 **Returns**
 A reference to our MotionDna SDK object.
+
+-----
+#### `MotionDna.SendUDP(string message)`&dagger;
+Send a string of data that will be broadcast to all other devices also in the same server room.
+
+Data is encrypted and sent securely. It is recommended that data use only safe and secure characters to reduce chances of failure.
+
+To receive the messages from other devices, see [`MotionDnaCallback.ReceiveUDP(string)`](#receiveudpstring-string)
+
+**Returns**
+A reference to our MotionDna SDK object.
+
+&dagger;<sub><sup>This feature not in Unity yet, and is only available for native SDKs. Unity release expected in near future.</sup></sub>
+
+-----
+#### `MotionDna.QueryUDPRooms(string[] rooms)`&dagger;
+Query the server for the current capacity of the listed rooms. Note that the server was designed so that you cannot retrieve a list of rooms without modifying the server. This is to encourage privacy through obscurity.
+
+To receive the results of a query, see [`MotionDnaCallback.ReceiveUDPRooms(Dictionary)`](#receiveudproomsdictionary)
+
+**Returns**
+A reference to our MotionDna SDK object.
+
+&dagger;<sub><sup>This feature not in Unity yet, and is only available for native SDKs. Unity release expected in near future.</sup></sub>
 
 -----
 #### `MotionDna.ResetLocalEstimation()`
@@ -724,3 +800,49 @@ Optional `deviceID` of query device. If blank, then the current device is used.
 
 **Returns**
 A float, equivalent to the Time.time when the latest MotionDna was received.
+
+-----
+
+## Callbacks ##
+_Callback functions are invoked from the SDK and pass any external information to Unity, such as network data. To listen for a callback in Unity, add a delegate using `MotionDna.Delegate(NetworkCode, Func)`.&dagger;_
+
+&dagger;<sub><sup>This feature not in Unity yet, and is only available for native SDKs. Unity release expected in the near future.</sup></sub>
+
+* [`.ReceiveUDP(string, string)`](#receiveudpstring-string)
+* [`.ReceiveUDPRooms(Dictionary)`](#receiveudproomsdictionary)
+* [`.ReceiveUDPDeviceLimit()`](#receiveudpdevicelimit)
+* [`.ReceiveUDPServerLimit()`](#receiveudpserverlimit)
+
+-----
+#### `.ReceiveUDP(string, string)`&dagger;
+This callback serves any messages passed using the [`MotionDna.SendUDP(string message)`](#motiondnasendudpstring-message) to any attached delegates. Messages can only be sent to and received from other devices in the same server room.
+
+**Params**
+Delegates will receive two `string`s. The first `string` represents the `deviceID`, while the second `string` holds the decrypted message.
+
+&dagger;<sub><sup>This feature not in Unity yet, and is only available for native SDKs. Unity release expected in the near future.</sup></sub>
+
+-----
+#### `.ReceiveUDPRooms(Dictionary)`&dagger;
+This callback serves a room query request to any attached delegates. Room query requests are those sent from the current device using [`MotionDna.QueryUDPRooms(string[] rooms)`](#motiondnaqueryudproomsstring-rooms).
+
+**Params**
+Delegates will receive a `Dictionary` which contains key-value pairs where the key is a room's name, and the value is the number of devices connected to the room, including (if applicable) the current device. No indication is made of a room's capacity.
+
+&dagger;<sub><sup>This feature not in Unity yet, and is only available for native SDKs. Unity release expected in the near future.</sup></sub>
+
+-----
+#### `.ReceiveUDPDeviceLimit()`&dagger;
+This callback serves max device errors to any attached delegates. This error notifies when attempting to connect or switch to a room, but the room has hit the maximum number of devices that may connect to it.
+
+The error will be sent continuously and multiple times until there is available space in the room to connect the current device. Once connected, a device cannot be removed from a room unless it times out or switches rooms.
+
+&dagger;<sub><sup>This feature not in Unity yet, and is only available for native SDKs. Unity release expected in the near future.</sup></sub>
+
+-----
+#### `.ReceiveUDPServerLimit()`&dagger;
+This callback serves max server errors to any attached delegates. When attempting to connect to a non-existent room, the server will attempt to allocate a new room and add the device to it. This error notifies when attempting to create a new room after the server has exceeded the maximum number of rooms it may create.
+
+The error will only be sent once per connection attempt.
+
+&dagger;<sub><sup>This feature not in Unity yet, and is only available for native SDKs. Unity release expected in the near future.</sup></sub>
