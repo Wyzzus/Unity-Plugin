@@ -442,7 +442,7 @@ Send a string of data that will be broadcast to all other devices also in the sa
 
 Data is encrypted and sent securely. It is recommended that data use only safe and secure characters to reduce chances of failure.
 
-To receive the messages from other devices, see [`MotionDnaCallback.ReceiveUDP(string)`](#receiveudpstring-string)
+To receive the messages from other devices, see [`.OnReceiveUDP(string, string)`](#onreceiveudpstring-string)
 
 **Returns**
 A reference to our MotionDna SDK object.
@@ -451,7 +451,7 @@ A reference to our MotionDna SDK object.
 #### `MotionDna.QueryUDPRooms(string[] rooms)`&dagger;
 Query the server for the current capacity of the listed rooms. Note that the server was designed so that you cannot retrieve a list of rooms without modifying the server. This is to encourage privacy through obscurity.
 
-To receive the results of a query, see [`MotionDnaCallback.ReceiveUDPRooms(Dictionary)`](#receiveudproomsdictionary)
+To receive the results of a query, see [`.OnReceiveUDPRooms(Dictionary)`](#onreceiveudproomsdictionary)
 
 **Returns**
 A reference to our MotionDna SDK object.
