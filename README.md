@@ -116,6 +116,11 @@ Video tutorial for setup.
 
 # Changelog #
 -----
+#### 2.0.0
+Added networking support! Improved algorithms.
+
+Known bug when using networking on Android devices occasionally causes crash. Patch in near future.
+
 #### 1.3.0
 Updated internals for better recognization of Augmented Reality type motions
 
