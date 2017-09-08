@@ -193,7 +193,7 @@ public class MotionDna
 
 	#if MOBILE_IOS
 	const string dllName = "__Internal";
-	#else
+#else
 	const string dllName = "null";
 	#endif
 
@@ -246,7 +246,16 @@ public class MotionDna
 	private static extern void _SetExternalPositioningState (int state);
 
 	[DllImport (dllName)]
-	private static extern void _StartUDP ();
+	private static extern void _StartUDPRoom (string room);
+
+	[DllImport (dllName)]
+	private static extern void _StartUDPRoomAtHostAndPort (string room, string host, string port);
+
+	[DllImport (dllName)]
+	private static extern void _SetUDPRoom (string room);
+
+	[DllImport (dllName)]
+	private static extern void _SendUDPPacket (string msg);
 
 	[DllImport (dllName)]
 	private static extern void _StopUDP ();
@@ -287,6 +296,7 @@ public class MotionDna
 	private static string deviceID = "";
 	private static Dictionary<string, Device> devices = new Dictionary<string, Device> ();
 	private static Device device;
+	private static HashSet<IMotionDnaUDPListener> listeners = new HashSet<IMotionDnaUDPListener> ();
 
 	#if MOBILE_ANDROID
 	private static AndroidJavaClass motionDna = new AndroidJavaClass ("com.navisens.motiondnaapi.MotionDnaPlugin");
@@ -344,8 +354,72 @@ public class MotionDna
 			JsonUtility.FromJsonOverwrite (json, d);
 	}
 
+	/// <summary>
+	/// Publishes UDP data to any listeners.
+	/// </summary>
+	/// <param name="msg">Message.</param>
+	public void ReceiveUDPData (string deviceID, string msg)
+	{
+		foreach (IMotionDnaUDPListener listener in listeners) {
+			listener.OnReceiveUDPData (deviceID, msg);
+		}
+	}
+
+	/*
+	/// <summary>
+	/// Publishes UDP rooms query to any listeners.
+	/// </summary>
+	/// <param name="dict">Dict.</param>
+	public void ReceiveUDPRooms (Dictionary<string, int> dict)
+	{
+		foreach (IMotionDnaUDPListener listener in listeners) {
+			listener.OnReceiveUDPRooms (dict);
+		}
+	}
+	*/
+
+	/// <summary>
+	/// Publishes a device limit error to any listeners.
+	/// </summary>
+	public void ReceiveUDPDeviceLimit ()
+	{
+		foreach (IMotionDnaUDPListener listener in listeners) {
+			listener.OnReceiveUDPDeviceLimit ();
+		}
+	}
+
+	/// <summary>
+	/// Publishes a server limit error to any listeners.
+	/// </summary>
+	public void ReceiveUDPServerLimit ()
+	{
+		foreach (IMotionDnaUDPListener listener in listeners) {
+			listener.OnReceiveUDPServerLimit ();
+		}
+	}
+
 	// Interface
 	// ================================================================================ //
+
+	/// <summary>
+	/// Adds a MotionDna UDP listener.
+	/// </summary>
+	/// <returns><c>true</c>, if motion dna UDP listener was added, <c>false</c> otherwise.</returns>
+	/// <param name="listener">Listener.</param>
+	public static bool AddMotionDnaUDPListener (IMotionDnaUDPListener listener)
+	{
+		return listeners.Add (listener);
+	}
+
+	/// <summary>
+	/// Removes a MotionDna UDP listener.
+	/// </summary>
+	/// <returns><c>true</c>, if motion dna UDP listener was removed, <c>false</c> otherwise.</returns>
+	/// <param name="listener">Listener.</param>
+	public static bool RemoveMotionDnaUDPListener (IMotionDnaUDPListener listener)
+	{
+		return listeners.Remove (listener);
+	}
 
 	/// <summary>
 	/// Gets the current device's ID.
@@ -360,7 +434,7 @@ public class MotionDna
 			deviceID = motionDna.CallStatic<string> ("getDeviceID");
 			#else
 			deviceID = "null";
-			#endif
+		#endif
 
 		return deviceID;
 	}
@@ -919,12 +993,48 @@ public class MotionDna
 	/// <summary>
 	/// Starts broadcasting and receiving, allowing this device's Motion Dna to be seen by other devices.
 	/// </summary>
-	public static MotionDna StartUDP ()
+	public static MotionDna StartUDP (string host = null, string port = null, string room = "unityDefaultRoom")
+	{
+		if (host == null || port == null) {
+			#if MOBILE_IOS
+			_StartUDPRoom (room);
+			#elif MOBILE_ANDROID
+			motionDna.CallStatic ("startUDPRoom", room);
+			#endif
+		} else {
+			#if MOBILE_IOS
+			_StartUDPRoomAtHostAndPort (room, host, port);
+			#elif MOBILE_ANDROID
+			motionDna.CallStatic ("startUDPRoomAtHostAndPort", room, host, port);
+			#endif
+		}
+
+		return _singleton;
+	}
+
+	/// <summary>
+	/// Starts broadcasting and receiving, allowing this device's Motion Dna to be seen by other devices.
+	/// </summary>
+	public static MotionDna SetUDPRoom (string room = "unityDefaultRoom")
 	{
 		#if MOBILE_IOS
-		_StartUDP ();
+			_SetUDPRoom (room);
 		#elif MOBILE_ANDROID
-		motionDna.CallStatic ("startUDP");
+			motionDna.CallStatic ("setUDPRoom", room);
+		#endif
+
+		return _singleton;
+	}
+
+	/// <summary>
+	/// Starts broadcasting and receiving, allowing this device's Motion Dna to be seen by other devices.
+	/// </summary>
+	public static MotionDna SendUDPPacket (string msg)
+	{
+		#if MOBILE_IOS
+			_SendUDPPacket (msg);
+		#elif MOBILE_ANDROID
+			motionDna.CallStatic ("sendUDPPacket", msg);
 		#endif
 
 		return _singleton;

@@ -24,6 +24,15 @@ enum SecondaryMotion
   };
 typedef enum SecondaryMotion SecondaryMotion;
 
+enum ErrorCode
+  {
+    SENSOR_TIMING = 0,
+    AUTHENTICATION_FAILED = 1,
+    SENSOR_MISSING = 2,
+    SDK_EXPIRED = 3
+  };
+typedef enum ErrorCode ErrorCode;
+
 enum PowerConsumptionMode
   {
     SUPER_LOW_CONSUMPTION,
@@ -54,7 +63,8 @@ enum VerticalType
   {
     ESCALATOR_STAIRS,
     ELEVATOR,
-    LEVEL
+    LEVEL,
+    STAIRS
   };
 typedef enum VerticalType VerticalType;
 
@@ -83,6 +93,15 @@ enum EstimationMode
   GLOBAL
 };
 typedef enum EstimationMode EstimationMode;
+
+enum NetworkCode
+{
+  RAW_NETWORK_DATA,
+  ROOM_CAPACITY_STATUS,
+  EXCEEDED_ROOM_CONNECTION_CAPACITY,
+  EXCEEDED_SERVER_ROOM_CAPACITY
+};
+typedef enum NetworkCode NetworkCode;
 
 struct MotionStatistics
 {
@@ -179,13 +198,6 @@ enum MapObjectType
   };
 typedef enum MapObjectType MapObjectType;
 
-@interface NVSSMessage : NSObject
-@property BOOL hasMessageToEnd;
-@property BOOL hasMessage;
-@property NSString* messageToEnd;
-@property NSString* message;
-@end
-
 @interface MotionDna : NSObject<NSObject>
 {
   @protected
@@ -199,8 +211,6 @@ typedef enum MapObjectType MapObjectType;
   MotionStatistics motionStatistics_;
   MotionStatistics polygonMotionStatistics_;
   OrientationQuaternion quaternion_;
-  @public
-    NVSSMessage* message_;
 }
 
 -(Location)getLocation;

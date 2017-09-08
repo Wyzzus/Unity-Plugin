@@ -24,7 +24,9 @@ __attribute__((visibility("default"))) @interface UnityMotionDna : MotionDnaSDK
 @property NSMutableDictionary* devices;
 
 - (void)receiveMotionDna:(MotionDna*)motionDna;
-- (void)failureToAuthenticate:(NSString*)msg;
+- (void)receiveNetworkData:(MotionDna*)motionDna;
+- (void)receiveNetworkData:(NetworkCode)opcode WithPayload:(NSDictionary*)payload;
+- (void)reportError:(ErrorCode)error WithMessage:(NSString*)message;
 
 @end
 
@@ -81,7 +83,10 @@ extern "C" {
     void EXPORT_API _SetNetworkUpdateRateInMs(double rate);
     void EXPORT_API _SetBinaryFileLoggingEnabled(BOOL state);
     void EXPORT_API _SetExternalPositioningState(int state);
-    void EXPORT_API _StartUDP();
+  void EXPORT_API _StartUDPRoom(const char* room);
+  void EXPORT_API _StartUDPRoomAtHostAndPort(const char* room, const char* host, const char* port);
+  void EXPORT_API _SetUDPRoom(const char* room);
+  void EXPORT_API _SendUDPPacket(const char* msg);
     void EXPORT_API _StopUDP();
     void EXPORT_API _SetBackgroundModeEnabled(BOOL state);
     void EXPORT_API _SetPowerMode(int mode);

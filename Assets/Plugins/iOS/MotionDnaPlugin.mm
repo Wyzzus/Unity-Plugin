@@ -9,6 +9,26 @@
 #import <Foundation/Foundation.h>
 #import "MotionDnaPlugin.h"
 
+@interface Device:NSObject
+
+@property NSString* deviceName;
+@property double heading;
+@property XYZ position;
+@property OrientationQuaternion rotation;
+@property Attitude attitude;
+
+@end
+
+@implementation Device:NSObject
+
+@synthesize deviceName;
+@synthesize heading;
+@synthesize position;
+@synthesize rotation;
+@synthesize attitude;
+
+@end
+
 static dispatch_queue_t _devicesQueue = dispatch_queue_create("com.navisens.pojostick.devicesQueue", DISPATCH_QUEUE_CONCURRENT);
 
 @implementation UnityMotionDna
@@ -31,9 +51,33 @@ static dispatch_queue_t _devicesQueue = dispatch_queue_create("com.navisens.pojo
     UnitySendMessage("MotionDna", "ReceivedMotionDna", MakeStringCopy([deviceID UTF8String]));
 }
 
-- (void)failureToAuthenticate:(NSString*)msg
+-(void)receiveNetworkData:(MotionDna *)motionDna
 {
-    UnitySendMessage("MotionDna", "FailedToAuthenticate", MakeStringCopy([msg UTF8String]));
+  [self receiveMotionDna: motionDna];
+}
+
+-(void)receiveNetworkData:(NetworkCode)opcode WithPayload:(NSDictionary *)payload
+{
+  if (opcode == RAW_NETWORK_DATA) {
+    NSString *msg = [[payload objectForKey:CreateNSString("ID")] stringByAppendingString: @":"];
+    msg = [msg stringByAppendingString: [payload objectForKey:CreateNSString("payload")]];
+    UnitySendMessage("MotionDna", "ReceivedNetworkData", MakeStringCopy([msg UTF8String]));
+  } else if (opcode == ROOM_CAPACITY_STATUS) {
+    // NSString *msg = [payload objectForKey:CreateNSString("")];
+    UnitySendMessage("MotionDna", "ReceivedNetworkRooms", "");
+  } else if (opcode == EXCEEDED_ROOM_CONNECTION_CAPACITY) {
+    UnitySendMessage("MotionDna", "ReceivedNetworkDeviceLimit", "");
+  } else if (opcode == EXCEEDED_SERVER_ROOM_CAPACITY) {
+    UnitySendMessage("MotionDna", "ReceivedNetworkServerLimit", "");
+  }
+}
+
+- (void)reportError:(ErrorCode)error WithMessage:(NSString*)message
+{
+  if (error == AUTHENTICATION_FAILED)
+  {
+    UnitySendMessage("MotionDna", "FailedToAuthenticate", MakeStringCopy([message UTF8String]));
+  }
 }
 
 @end
@@ -59,7 +103,6 @@ extern "C" {
     void EXPORT_API _StopMotionDna() {
         if (unityMotionDna)
             [unityMotionDna stop];
-        unityMotionDna = nil;
     }
     
     void EXPORT_API _SetLocationLatitudeLongitudeAndHeadingInDegrees(double latitude, double longitude, double heading) {
@@ -118,10 +161,22 @@ extern "C" {
         if (unityMotionDna)
             [unityMotionDna setExternalPositioningState:(ExternalPositioningState)state];
     }
-    void EXPORT_API _StartUDP() {
-        if (unityMotionDna)
-            [unityMotionDna startUDP];
-    }
+  void EXPORT_API _StartUDPRoom(const char* room) {
+    if (unityMotionDna)
+      [unityMotionDna startUDPRoom:CreateNSString(room) ];
+  }
+  void EXPORT_API _StartUDPRoomAtHostAndPort(const char* room, const char* host, const char* port) {
+    if (unityMotionDna)
+      [unityMotionDna startUDPRoom:CreateNSString(room) AtHost:CreateNSString(host) AndPort:CreateNSString(port)];
+  }
+  void EXPORT_API _SetUDPRoom(const char* room) {
+    if (unityMotionDna)
+      [unityMotionDna setUDPRoom:CreateNSString(room)];
+  }
+  void EXPORT_API _SendUDPPacket(const char* msg) {
+    if (unityMotionDna)
+      [unityMotionDna sendUDPPacket:CreateNSString(msg)];
+  }
     void EXPORT_API _StopUDP() {
         if (unityMotionDna)
             [unityMotionDna stopUDP];
