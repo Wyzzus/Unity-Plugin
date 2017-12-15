@@ -94,32 +94,17 @@ public class MotionDna
 		public int locationStatus;
 		public double heading;
 		public double localHeading;
-		public int direction;
-		public int type;
+		public int verticalMotion;
 		public double stepFrequency;
-		public int primaryMotion;
-		public int secondaryMotion;
+		public int motionType;
 		public string deviceName;
 	}
 
-	public enum PrimaryMotion
+	public enum MotionType
 	{
 		STATIONARY = 0,
 		FIDGETING,
 		FORWARD,
-		INVALID = -1}
-
-	;
-
-	public enum SecondaryMotion
-	{
-		UNDEFINED = 0,
-		FORWARD_IN_HAND,
-		FORWARD_IN_HAND_SWINGING,
-		FORWARD_IN_POCKET,
-		FORWARD_IN_CALL,
-		DWELLING,
-		JUMPING,
 		INVALID = -1}
 
 	;
@@ -142,20 +127,15 @@ public class MotionDna
 
 	;
 
-	public enum VerticalDirection
+	public enum VerticalMotion
 	{
-		UP = 0,
-		DOWN,
-		CONSTANT,
-		INVALID = -1}
-
-	;
-
-	public enum VerticalType
-	{
-		ESCALATOR_STAIRS,
-		ELEVATOR,
-		LEVEL,
+		VERTICAL_STATUS_LEVEL_GROUND = 0,
+		VERTICAL_STATUS_ESCALATOR_UP,
+		VERTICAL_STATUS_ESCALATOR_DOWN,
+		VERTICAL_STATUS_ELEVATOR_UP,
+		VERTICAL_STATUS_ELEVATOR_DOWN,
+		VERTICAL_STATUS_STAIRS_UP,
+		VERTICAL_STATUS_STAIRS_DOWN,
 		INVALID = -1}
 
 	;
@@ -593,33 +573,18 @@ public class MotionDna
 	}
 
 	/// <summary>
-	/// Gets the vertical motion direction of the device with id deviceID, if it exists, or INVALID if it does not.
+	/// Gets the vertical motion status of the device with id deviceID, if it exists, or INVALID if it does not.
 	/// <para></para>
 	/// If no deviceID is provided, then default to the current device instead.
 	/// </summary>
-	/// <returns>The vertical motion direction.</returns>
+	/// <returns>The vertical motion status.</returns>
 	/// <param name="deviceID">Device ID.</param>
-	public static VerticalDirection GetVerticalMotionDirection (string deviceID = null)
+	public static VerticalMotion GetVerticalMotionDirection (string deviceID = null)
 	{
 		int ordinal = -1;
 		if (device = GetDevice (deviceID))
-			ordinal = device.nativeDevice.direction;
-		return (VerticalDirection)ordinal;
-	}
-
-	/// <summary>
-	/// Gets the vertical motion type of the device with id deviceID, if it exists, or INVALID if it does not.
-	/// <para></para>
-	/// If no deviceID is provided, then default to the current device instead.
-	/// </summary>
-	/// <returns>The vertical motion type.</returns>
-	/// <param name="deviceID">Device ID.</param>
-	public static VerticalType GetVerticalMotionType (string deviceID = null)
-	{
-		int ordinal = -1;
-		if (device = GetDevice (deviceID))
-			ordinal = device.nativeDevice.type;
-		return (VerticalType)ordinal;
+			ordinal = device.nativeDevice.verticalMotion;
+			return (VerticalMotion)ordinal;
 	}
 
 	/// <summary>
@@ -651,33 +616,18 @@ public class MotionDna
 	}
 
 	/// <summary>
-	/// Gets the primary motion of the device with id deviceID, if it exists, or INVALID if it does not.
+	/// Gets the primary motion type of the device with id deviceID, if it exists, or INVALID if it does not.
 	/// <para></para>
 	/// If no deviceID is provided, then default to the current device instead.
 	/// </summary>
 	/// <returns>The primary motion.</returns>
 	/// <param name="deviceID">Device ID.</param>
-	public static PrimaryMotion GetPrimaryMotion (string deviceID = null)
+	public static MotionType GetMotionType (string deviceID = null)
 	{
 		int ordinal = -1;
 		if (device = GetDevice (deviceID))
-			ordinal = device.nativeDevice.primaryMotion;
-		return (PrimaryMotion)ordinal;
-	}
-
-	/// <summary>
-	/// Gets the secondary motion of the device with id deviceID, if it exists, or INVALID if it does not.
-	/// <para></para>
-	/// If no deviceID is provided, then default to the current device instead.
-	/// </summary>
-	/// <returns>The secondary motion.</returns>
-	/// <param name="deviceID">Device ID.</param>
-	public static SecondaryMotion GetSecondaryMotion (string deviceID = null)
-	{
-		int ordinal = -1;
-		if (device = GetDevice (deviceID))
-			ordinal = device.nativeDevice.secondaryMotion;
-		return (SecondaryMotion)ordinal;
+			ordinal = device.nativeDevice.motionType;
+		return (MotionType)ordinal;
 	}
 
 	/// <summary>

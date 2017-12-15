@@ -4,25 +4,13 @@
 #import <Foundation/Foundation.h>
 #import <CoreLocation/CoreLocation.h>
 
-enum PrimaryMotion
+enum MotionType
   {
     STATIONARY,
     FIDGETING,
     FORWARD
   };
-typedef enum PrimaryMotion PrimaryMotion;
-
-enum SecondaryMotion
-  {
-    UNDEFINED,
-    FORWARD_IN_HAND,
-    FORWARD_IN_HAND_SWINGING,
-    FORWARD_IN_POCKET,
-    FORWARD_IN_CALL,
-    DWELLING,
-    JUMPING
-  };
-typedef enum SecondaryMotion SecondaryMotion;
+typedef enum MotionType MotionType;
 
 enum ErrorCode
   {
@@ -51,22 +39,6 @@ enum ExternalPositioningState
   };
 typedef enum ExternalPositioningState ExternalPositioningState;
 
-enum VerticalDirection
-  {
-    UP,
-    DOWN,
-    CONSTANT
-  };
-typedef enum VerticalDirection VerticalDirection;
-
-enum VerticalType
-  {
-    ESCALATOR_STAIRS,
-    ELEVATOR,
-    LEVEL,
-    STAIRS
-  };
-typedef enum VerticalType VerticalType;
 
 enum LocationStatus
   {
@@ -78,6 +50,20 @@ enum LocationStatus
     BEACON_INITIALIZED
   };
 typedef enum LocationStatus LocationStatus;
+  
+
+enum VerticalMotionStatus
+{
+  VERTICAL_STATUS_LEVEL_GROUND = 0,
+  VERTICAL_STATUS_ESCALATOR_UP = 1,
+  VERTICAL_STATUS_ESCALATOR_DOWN = -1,
+  VERTICAL_STATUS_ELEVATOR_UP = 2,
+  VERTICAL_STATUS_ELEVATOR_DOWN = -2,
+  VERTICAL_STATUS_STAIRS_UP = 3,
+  VERTICAL_STATUS_STAIRS_DOWN = -3,
+};
+typedef enum VerticalMotionStatus VerticalMotionStatus;
+
 
 enum CalibrationStatus
   {
@@ -111,12 +97,6 @@ struct MotionStatistics
 };
 typedef struct MotionStatistics MotionStatistics;
 
-struct VerticalMotionStatus
-{
-  VerticalDirection direction;
-  VerticalType type;
-};
-typedef struct VerticalMotionStatus VerticalMotionStatus;
 
 struct Attitude
 {
@@ -167,14 +147,14 @@ struct Location
   double localHeading;
   XY uncertainty;
   VerticalMotionStatus verticalMotionStatus;
+  int floor;
 };
 typedef struct Location Location;
 
 struct Motion
 {
   double stepFrequency;
-  PrimaryMotion primaryMotion;
-  SecondaryMotion secondaryMotion;
+  MotionType motionType;
 };
 typedef struct Motion Motion;
 
