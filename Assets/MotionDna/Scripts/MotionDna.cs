@@ -579,7 +579,7 @@ public class MotionDna
 	/// </summary>
 	/// <returns>The vertical motion status.</returns>
 	/// <param name="deviceID">Device ID.</param>
-	public static VerticalMotion GetVerticalMotionDirection (string deviceID = null)
+	public static VerticalMotion GetVerticalMotion (string deviceID = null)
 	{
 		int ordinal = -1;
 		if (device = GetDevice (deviceID))
