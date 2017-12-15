@@ -117,6 +117,12 @@ Video tutorial for setup.
 
 # Changelog #
 -----
+#### 3.0.0
+Updated the code to match MotionDnaSDK Android v1.1.0 and iOS v1.1.0
+
+Removed `SecondaryMotion` and turned `PrimaryMotion` into `MotionType`
+Combined `VerticalType` and `VerticalDirection` into `VerticalMotion`
+
 #### 2.0.1
 Internal enhancements & bug fixes for AR mode.
 
@@ -506,12 +512,10 @@ Vector3 position = MotionDna.Position;
 * [`double? MotionDna.GetGlobalHeading(string deviceID = null)`](#double-motiondnagetglobalheadingstring-deviceid--null)
 * [`Vector2 MotionDna.Uncertainty`](#vector-motiondnauncertainty)
 * [`Vector2? MotionDna.GetUncertainty(string deviceID = null)`](#vector-motiondnagetuncertaintystring-deviceid--null)
-* [`VerticalDirection MotionDna.GetVerticalMotionDirection (string deviceID = null)`](#verticaldirection-motiondnagetverticalmotiondirection-string-deviceid--null)
-* [`VerticalType MotionDna.GetVerticalMotionType (string deviceID = null)`](#verticaltype-motiondnagetverticalmotiontype-string-deviceid--null)
+* [`VerticalMotion MotionDna.GetVerticalMotion (string deviceID = null)`](#verticalmotion-motiondnagetverticalmotion-string-deviceid--null)
 * [`Attitude? MotionDna.GetAttitude (string deviceID = null)`](#attitude-motiondnagetattitude-string-deviceid--null)
 * [`double? MotionDna.GetStepFrequency (string deviceID = null)`](#double-motiondnagetstepfrequency-string-deviceid--null)
-* [`PrimaryMotion GetPrimaryMotion (string deviceID = null)`](#primarymotion-getprimarymotion-string-deviceid--null)
-* [`SecondaryMotion GetSecondaryMotion (string deviceID = null)`](#secondarymotion-getsecondarymotion-string-deviceid--null)
+* [`MotionType GetMotionType (string deviceID = null)`](#motiontype-getmotiontype-string-deviceid--null)
 * [`string GetDeviceName (string deviceID = null)`](#string-getdevicename-string-deviceid--null)
 * [`MotionStatistics? GetMotionStatistics (string deviceID = null)`](#motionstatistics-getmotionstatistics-string-deviceid--null)
 * [`Quaternion MotionDna.Orientation`](#quaternion-motiondnaorientation)
@@ -634,7 +638,29 @@ Optional `deviceID` of query device. If blank, then the current device is used.
 A `Nullable<Vector2>` which contains the cartesian error of the query device. Will be `null` only if no valid device was found.
 
 -----
+#### `VerticalMotion MotionDna.GetVerticalMotion (string deviceID = null)`
+Gets the detected vertical motion type and direction
+
+**Params**
+Optional `deviceID` of query device. If blank, then the current device is used.
+
+**Returns**
+A `VerticalMotion`
+* `VERTICAL_STATUS_LEVEL_GROUND`
+* `VERTICAL_STATUS_ESCALATOR_UP`
+* `VERTICAL_STATUS_ESCALATOR_DOWN`
+* `VERTICAL_STATUS_ELEVATOR_UP`
+* `VERTICAL_STATUS_ELEVATOR_DOWN`
+* `VERTICAL_STATUS_STAIRS_UP`
+* `VERTICAL_STATUS_STAIRS_DOWN`
+* `INVALID` if no device with the `deviceID` was found
+
+-----
 #### `VerticalDirection MotionDna.GetVerticalMotionDirection (string deviceID = null)`
+```diff
+-@deprecated
+```
+
 Gets the direction of any detected vertical motion
 
 **Params**
@@ -649,6 +675,10 @@ A `VerticalDirection`
 
 -----
 #### `VerticalType MotionDna.GetVerticalMotionType (string deviceID = null)`
+```diff
+-@deprecated
+```
+
 Gets the type of detected motion
 
 **Params**
@@ -682,7 +712,25 @@ Optional `deviceID` of query device. If blank, then the current device is used.
 A `Nullable<double>` which contains the step frequency of the query device. Will be `null` only if no valid device was found.
 
 -----
+#### `MotionType GetMotionType (string deviceID = null)`
+Gets the predicted motion type. (see below)
+
+**Params**
+Optional `deviceID` of query device. If blank, then the current device is used.
+
+**Returns**
+A `MotionType` which can be one of the following:
+* `STATIONARY` if the device is placed on a stable surface and is not moving
+* `FIDGETING` if the device is in the possession of a person, and is moving chaotically
+* `FORWARD` if user is walking with the device
+* `INVALID` if no device with the `deviceID` was found
+
+-----
 #### `PrimaryMotion GetPrimaryMotion (string deviceID = null)`
+```diff
+-@deprecated
+```
+
 Gets the primary motion. (see below)
 
 **Params**
@@ -697,6 +745,10 @@ A `PrimaryMotion` which can be one of the following:
 
 -----
 #### `SecondaryMotion GetSecondaryMotion (string deviceID = null)`
+```diff
+-@deprecated
+```
+
 Gets the secondary motion, if any. (see below)
 
 **Params**
