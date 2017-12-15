@@ -121,6 +121,7 @@ Video tutorial for setup.
 Updated the code to match MotionDnaSDK Android v1.1.0 and iOS v1.1.0
 
 Removed `SecondaryMotion` and turned `PrimaryMotion` into `MotionType`
+
 Combined `VerticalType` and `VerticalDirection` into `VerticalMotion`
 
 #### 2.0.1
