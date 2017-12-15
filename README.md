@@ -112,10 +112,16 @@ Video tutorial for setup.
     }
     ```
     * Note: The `appcompat` package is necessary, because buildtools will update to 25.0.3 (or future)
-6. Build and test your app!
+6. Use compile and target SDK version 24
+7. Build and test your app!
 
 # Changelog #
 -----
+#### 2.0.1
+Internal enhancements & bug fixes for AR mode.
+
+Fixed networking issues for iOS and Android devices!
+
 #### 2.0.0
 Added networking support! Improved algorithms.
 
