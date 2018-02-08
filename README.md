@@ -42,7 +42,7 @@ public class CameraController
     }
 ```
 
-   * Simple example of updating the position and heading of the player.
+   * Simple example of updating the position and heading of an object (such as the player) instead of the camera.
 
 ```csharp
 public class PlayerController
