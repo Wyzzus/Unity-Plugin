@@ -17,7 +17,7 @@ The sources for the development version are also included in the `/Assets` direc
     * `/MotionDna` folder containing a Prefab object and the Unity C# scripts
     * `/Plugins` folder containing native libraries and wrapper classes for Unity3D integration
 3. Open a scene, and drag the MotionDna.prefab into the scene.
-* This GameObject provides a callback for our SDK to notify Unity3D that new estimation results are ready to be published, via `MotionDnaCallback.ReceivedMotionDna(string)` function. Please make sure only **one** of these exists so you don't make unnecessary queries. If you no longer require live updates, you can remove this object from the scene to prevent automatic updates from our SDK.
+    * This GameObject provides a callback for our SDK to notify Unity3D that new estimation results are ready to be published, via `MotionDnaCallback.ReceivedMotionDna(string)` function. Please make sure only **one** of these exists so you don't make unnecessary queries. If you no longer require live updates, you can remove this object from the scene to prevent automatic updates from our SDK.
 4. Create a new script and in the `Start()` function, set up our MotionDna SDK
     * Here is an example of a basic set up. See the [API](#api) below for more details.
 ```csharp
@@ -42,7 +42,7 @@ public class CameraController
     }
 ```
 
-    * Simple example of updating the position and heading of the player.
+   * Simple example of updating the position and heading of the player.
 
 ```csharp
 public class PlayerController
