@@ -17,20 +17,35 @@ The sources for the development version are also included in the `/Assets` direc
     * `/MotionDna` folder containing a Prefab object and the Unity C# scripts
     * `/Plugins` folder containing native libraries and wrapper classes for Unity3D integration
 3. Open a scene, and drag the MotionDna.prefab into the scene.
-* This GameObject provides a callback for our SDK to notify Unity3D that new estimation results are ready to be published, via `MotionDnaCallback.ReceivedMotionDna(string)` function. Please make sure only **one** of these exists so you don't make unnecessary queries. If you no longer require live updates, you can remove this object from the scene to prevent automatic updates from our SDK.
+    * This GameObject provides a callback for our SDK to notify Unity3D that new estimation results are ready to be published, via `MotionDnaCallback.ReceivedMotionDna(string)` function. Please make sure only **one** of these exists so you don't make unnecessary queries. If you no longer require live updates, you can remove this object from the scene to prevent automatic updates from our SDK.
 4. Create a new script and in the `Start()` function, set up our MotionDna SDK
     * Here is an example of a basic set up. See the [API](#api) below for more details.
 ```csharp
     private const string DEVELOPER_KEY = "/* YOUR DEVELOPER KEY */";
     void Start ()
     {
-        MotionDna.Init (DEVELOPER_KEY).SetCallbackUpdateRateInMs (50)
+        MotionDna.Init (DEVELOPER_KEY)
+	    .SetCallbackUpdateRateInMs (50)
             .SetExternalPositioningState (MotionDna.ExternalPositioningState.OFF);
     }
 ```
 5. Once you have `Init` our MotionDna SDK, you can begin accessing our estimation results.
-    * Simple example of updating the position and heading of the player.
+    * Example of updating the camera's position for an AR app (as in video tutorials below).
+
 ```csharp
+public class CameraController
+    // Update is called once per frame
+    void Update ()
+    {
+        transform.position = MotionDna.Position;
+	transform.localRotation = MotionDna.Orientation;
+    }
+```
+
+   * Simple example of updating the position and heading of an object (such as the player) instead of the camera.
+
+```csharp
+public class PlayerController
     // Update is called once per frame
     void Update ()
     {
@@ -42,6 +57,7 @@ The sources for the development version are also included in the `/Assets` direc
         GetComponent<Transform> ().eulerAngles = eAngles;
     }
 ```
+
 6. Compile and run! Some additional setup will be necessary. See below.
 
 ## iOS ##
@@ -121,6 +137,7 @@ Video tutorial for setup.
 Updated the code to match MotionDnaSDK Android v1.1.0 and iOS v1.1.0
 
 Removed `SecondaryMotion` and turned `PrimaryMotion` into `MotionType`
+
 Combined `VerticalType` and `VerticalDirection` into `VerticalMotion`
 
 #### 2.0.1
