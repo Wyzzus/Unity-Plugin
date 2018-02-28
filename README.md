@@ -25,6 +25,7 @@ The sources for the development version are also included in the `/Assets` direc
     void Start ()
     {
         MotionDna.Init (DEVELOPER_KEY)
+	    .EnableARMode ()
 	    .SetCallbackUpdateRateInMs (50)
             .SetExternalPositioningState (MotionDna.ExternalPositioningState.OFF);
     }
