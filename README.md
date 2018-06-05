@@ -14,9 +14,9 @@ The sources for the development version are also included in the `/Assets` direc
 	* [iOS](#ios)
 	* [Android](#android)
 2. After you import, you will have access to the following
-    * `/MotionDna` folder containing a Prefab object and the Unity C# scripts
+    * `/Plugins/MotionDna` folder containing a Prefab object and the Unity C# scripts
     * `/Plugins` folder containing native libraries and wrapper classes for Unity3D integration
-3. Open a scene, and drag the MotionDna.prefab into the scene.
+3. Open a scene, and drag the MotionDna.prefab from `/Plugins/MotionDna` into the scene.
     * This GameObject provides a callback for our SDK to notify Unity3D that new estimation results are ready to be published, via `MotionDnaCallback.ReceivedMotionDna(string)` function. Please make sure only **one** of these exists so you don't make unnecessary queries. If you no longer require live updates, you can remove this object from the scene to prevent automatic updates from our SDK.
 4. Create a new script and in the `Start()` function, set up our MotionDna SDK
     * Here is an example of a basic set up. See the [API](#api) below for more details.
