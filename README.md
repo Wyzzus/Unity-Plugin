@@ -134,6 +134,11 @@ Video tutorial for setup.
 
 # Changelog #
 -----
+#### 4.0.0
+Changes in folder layout.
+
+Update the navisens core to v1.4.2 for both Android and iOS.
+
 #### 3.0.0
 Updated the code to match MotionDnaSDK Android v1.1.0 and iOS v1.1.0
 
