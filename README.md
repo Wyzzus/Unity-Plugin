@@ -134,6 +134,9 @@ Video tutorial for setup.
 
 # Changelog #
 -----
+#### 4.0.1
+Update the navisens core to v1.5.0 for both Android and iOS.
+
 #### 4.0.0
 Changes in folder layout.
 
