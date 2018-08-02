@@ -100,7 +100,7 @@ Video tutorial for setup.
         // ...
 
         dependencies {
-            classpath 'com.android.tools.build:gradle:2.3.3'
+            classpath 'com.android.tools.build:gradle:3.1.3'
         }
     }
 	```
@@ -110,12 +110,8 @@ Video tutorial for setup.
         repositories {
            // ...
 
-           maven {
-               url 'https://oss.sonatype.org/content/groups/public'
-           }
-           maven {
-               url 'https://maven.fabric.io/public'
-           }
+           mavenCentral()
+           google()
        }
     }
     ```
@@ -123,12 +119,12 @@ Video tutorial for setup.
     ```gradle
     dependencies {
         // ...
-        compile 'com.android.support:appcompat-v7:24.2.1'
-        compile 'org.altbeacon:android-beacon-library:2.+'
-        compile 'com.google.code.gson:gson:2.8.1'
+        implementation 'com.android.support:appcompat-v7:27.1.1'
+        implementation 'org.altbeacon:android-beacon-library:2.+'
+        implementation 'com.google.code.gson:gson:2.8.5'
     }
     ```
-    * Note: The `appcompat` package is necessary, because buildtools will update to 25.0.3 (or future)
+    * Note: The `appcompat` package is necessary
 6. Use compile and target SDK version 24
 7. Build and test your app!
 
