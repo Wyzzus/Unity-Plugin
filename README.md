@@ -130,6 +130,9 @@ Video tutorial for setup.
 
 # Changelog #
 -----
+#### 4.0.4
+Update the navisens core to v1.6.1 for both Android and iOS.
+
 #### 4.0.3
 Update the navisens core to v1.6.0 for both Android and iOS.
 
