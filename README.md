@@ -130,6 +130,9 @@ Video tutorial for setup.
 
 # Changelog #
 -----
+#### 4.0.12
+Update the navisens core to v1.8.1 for both Android and iOS.
+
 #### 4.0.11
 Update the navisens core to v1.8.0 for both Android and iOS.
 
@@ -558,6 +561,7 @@ Vector3 position = MotionDna.Position;
 - [iOS](#ios)
 - [Android](#android)
 - [# Changelog](#changelog)
+    - [4.0.12](#4012)
     - [4.0.11](#4011)
     - [4.0.10](#4010)
     - [4.0.9](#409)
