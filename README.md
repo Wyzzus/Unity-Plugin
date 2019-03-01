@@ -130,6 +130,9 @@ Video tutorial for setup.
 
 # Changelog #
 -----
+#### 4.0.14
+Update the navisens core to v1.8.3 for both Android and iOS.
+
 #### 4.0.13
 Update the navisens core to v1.8.2 for iOS for fixing simulator crash.
 
@@ -564,6 +567,7 @@ Vector3 position = MotionDna.Position;
 - [iOS](#ios)
 - [Android](#android)
 - [# Changelog](#changelog)
+    - [4.0.14](#4014)
     - [4.0.13](#4013)
     - [4.0.12](#4012)
     - [4.0.11](#4011)
